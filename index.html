@@ -784,14 +784,21 @@
                 // Pure Frontend Simulation for Netlify Deployment
                 const ML_CLASSES = ['COVID19', 'NORMAL', 'PNEUMONIA', 'TUBERCULOSIS'];
                 const predicted_class = ML_CLASSES[Math.floor(Math.random() * ML_CLASSES.length)];
-                const confidence = 0.75 + (Math.random() * 0.24); 
+                const confidence = 0.75 + (Math.random() * 0.20); 
                 
+                const remaining = 1.0 - confidence;
+                const r1 = Math.random(); const r2 = Math.random(); const r3 = Math.random();
+                const sumR = r1 + r2 + r3;
+                const otherVals = [(r1/sumR) * remaining, (r2/sumR) * remaining, (r3/sumR) * remaining];
+
                 const all_confidences = {};
+                let idx = 0;
                 ML_CLASSES.forEach(c => {
                     if(c === predicted_class) {
                         all_confidences[c] = confidence;
                     } else {
-                        all_confidences[c] = 0.01 + (Math.random() * 0.19);
+                        all_confidences[c] = otherVals[idx];
+                        idx++;
                     }
                 });
 

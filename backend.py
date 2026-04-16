@@ -90,9 +90,21 @@ async def predict(file: UploadFile = File(...)):
     else:
         # Fallback Mock Mode (no pytorch or model.pth)
         predicted_class = random.choice(CLASSES)
-        confidence = random.uniform(0.75, 0.99)
-        all_confidences = {c: random.uniform(0.01, 0.20) for c in CLASSES if c != predicted_class}
-        all_confidences[predicted_class] = confidence
+        confidence = random.uniform(0.75, 0.95)
+        
+        remaining = 1.0 - confidence
+        r = [random.random() for _ in range(3)]
+        sum_r = sum(r)
+        other_vals = [(x / sum_r) * remaining for x in r]
+        
+        all_confidences = {}
+        idx = 0
+        for c in CLASSES:
+            if c == predicted_class:
+                all_confidences[c] = confidence
+            else:
+                all_confidences[c] = other_vals[idx]
+                idx += 1
         mocked = True
         
         if not HAS_ML_DEPS:
